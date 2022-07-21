@@ -12,22 +12,16 @@ class SingleArticleContainer extends React.Component {
       loading: true,
     };
   }
-  async UNSAFE_componentWillMount() {
-    let article = this.props.articles.find(articleInArray =>
-      articleInArray.slug === this.props.match.params.slug);
-
-    if (article) {
-      this.setState({ article, loading: false });
-    } else {
-      article = await this.props.getArticle(this.props.match.params.slug);
-      this.setState({ article, loading: false });
-    }
+  async UNSAFE_componentWillMount(){
+    //console.log(this.props)
+    const article = await this.props.getArticle(this.props.match.params.slugs)
+    this.setState({article})
   }
 
   render() {
     return (
       <div>
-        {
+        {/* {
           !this.state.loading &&
           <Article
             article={this.state.article}
@@ -36,7 +30,8 @@ class SingleArticleContainer extends React.Component {
         {
           this.state.loading &&
           <p className="text-center">LOADING ...</p>
-        }
+        } */}
+        <Article article={this.state.article}/>
       </div>
     );
   }
@@ -46,7 +41,7 @@ SingleArticleContainer.propTypes = {
   getArticle: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
-      slug: PropTypes.string.isRequired,
+      slugs: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
   articles: PropTypes.arrayOf(PropTypes.shape({

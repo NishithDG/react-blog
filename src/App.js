@@ -35,7 +35,6 @@ class App extends React.Component {
     // }
     const user = localStorage.getItem('user')
     if (user) {
-      console.log('in user')
       this.setState({
         authUser:JSON.parse(user),
       })
@@ -58,7 +57,12 @@ class App extends React.Component {
           location.pathname !== '/login' && location.pathname !== '/register' &&
           <Navbar authUser={this.state.authUser} />
         }
-        <Route exact path="/" component={Welcome} />
+        <Route exact path="/" render={(props)=>(
+          <Welcome
+          {...props}
+          getArticles = {this.props.articleService.getArticles}
+          />
+        )} />
         <Route path="/articles/create" render={(props)=>(
           <CreateArticle
           {...props}
@@ -67,7 +71,12 @@ class App extends React.Component {
           token={this.state.authUser?this.state.authUser.token : null}
           />
         )} />
-        <Route path="/article/:slugs" component={SingleArticle} />
+        <Route path="/article/:slugs" render={(props)=>(
+          <SingleArticle
+          {...props}
+          getArticle = {this.props.articleService.getArticle}
+          />
+        )} />
         <Route path="/login" render={(props)=>(
           <Login
           {...props}

@@ -9,8 +9,8 @@ class CreateArticle extends React.Component{
         title:'',
         image:null,
         content:'',
-        channel:null,
-        errors:{},
+        category:null,
+        errors:[],
         categories:[],          
       }
     }
@@ -23,11 +23,23 @@ class CreateArticle extends React.Component{
         
     }
 
+    handleSubmit = async(event)=>{
+        console.log('submitting form')
+        event.preventDefault()
+        try{
+            const article = await this.props.createArticle(this.state,this.props.token)
+            this.props.history.push("/")
+        }catch(errors){
+            this.setState({errors})
+        }
+    }
+
     handleInputChange = (event) => {
         this.setState({
-            [event.target.name] : event.target.type == 'files' ? event.taget.files[0] : event.target.value
+            [event.target.name] : (event.target.type === 'file' ? event.target.files[0] : event.target.value)           
         })
         console.log(this.state)
+        console.log('updating inputs')
     }
 
     render(){
@@ -35,11 +47,18 @@ class CreateArticle extends React.Component{
             <CreateArticleForm
             handleInputChange={this.handleInputChange}
             categories = {this.state.categories}
+            handleSubmit = {this.handleSubmit}
+            errors = {this.state.errors}
             />
         )
     }
 }
 CreateArticle.propTypes = {
     getArticleCategories: PropTypes.func.isRequired,
+    createArticle:PropTypes.func.isRequired,
+    token:PropTypes.string.isRequired,
+    history: PropTypes.shape({
+        push: PropTypes.func.isRequired,
+      }).isRequired,
 }
 export default CreateArticle;
